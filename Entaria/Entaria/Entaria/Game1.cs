@@ -11,11 +11,14 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Entaria
 {
-
     public class Game1 : Microsoft.Xna.Framework.Game
+
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Player p = new Player();
+
+        Texture2D grid;
 
         public Game1()
         {
@@ -23,7 +26,7 @@ namespace Entaria
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
         }
 
         protected override void Initialize()
@@ -34,6 +37,8 @@ namespace Entaria
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            p.LoadContent(Content);
+            grid = Content.Load<Texture2D>("level/grid");
         }
 
         protected override void UnloadContent()
@@ -54,12 +59,24 @@ namespace Entaria
                 this.Exit();
             }
 
+            p.Update(gameTime);
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.AliceBlue);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone);
+
+            // Things to be drawn
+            #region
+            spriteBatch.Draw(grid, Vector2.Zero, Color.White);
+
+            p.Draw(spriteBatch);
+            #endregion
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
